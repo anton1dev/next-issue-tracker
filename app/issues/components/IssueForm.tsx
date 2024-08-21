@@ -22,7 +22,7 @@ interface Props {
     issue?: Issue
 }
 
-const IssueForm = ({issue}: Props) => {
+const IssueForm = ({ issue }: Props) => {
     const router = useRouter();
     const { register, control, handleSubmit, formState: { errors } } = useForm<IssueFormData>({
         resolver: zodResolver(issueSchema)
@@ -41,8 +41,15 @@ const IssueForm = ({issue}: Props) => {
             <form className='space-y-3' onSubmit={handleSubmit(async (data) => {
                 try {
                     setSubmitting(true);
-                    await axios.post('/api/issues', data);
+                    if (issue) {
+                        await axios.patch(`/api/issues/${issue.id}`, data)
+                    }
+                    else {
+                        await axios.post('/api/issues', data);
+                    }
+
                     router.push('/issues');
+                    router.refresh();
                 } catch (error) {
                     setSubmitting(false);
                     setError('An unexpected error occured!');
@@ -61,7 +68,7 @@ const IssueForm = ({issue}: Props) => {
                 <ErrorMessage>{errors.description?.message}
                 </ErrorMessage>
                 <Button disabled={submitting}>
-                    Submit New Issue{submitting && <Spinner />}
+                    {issue ? 'Update current issue' : 'Submit New Issue'}{' '}{submitting && <Spinner />}
                 </Button>
             </form>
         </div>
