@@ -7,6 +7,7 @@ import IssuesActions from './IssuesActions'
 import { Issue, Status } from '@prisma/client'
 import { ArrowUpIcon } from '@radix-ui/react-icons';
 import Pagination from '@/app/components/Pagination';
+import { Metadata } from 'next';
 
 interface Props {
   searchParams: { status: Status, orderBy: keyof Issue, page: string }
@@ -85,3 +86,8 @@ const IssuesPage = async ({ searchParams }: Props) => {
 }
 
 export default IssuesPage
+
+export const metadata: Metadata = {
+  title: 'List of actual issues',
+  description: 'Viewing all issues'
+};
